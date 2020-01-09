@@ -53,7 +53,7 @@ public class BaseViewHolderHelper extends RecyclerView.ViewHolder {
     }
 
     /**
-     * 未知View
+     * 只知道layoutId的情况下
      *
      * @param context
      * @param layoutId
