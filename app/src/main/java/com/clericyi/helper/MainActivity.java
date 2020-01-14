@@ -2,32 +2,29 @@ package com.clericyi.helper;
 
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.clericyi.basehelper.BaseActivity;
+import com.clericyi.basehelper.ui.LeadBaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends LeadBaseActivity {
 
-    private static final String TAG = "wangyi";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        List list = new ArrayList<Integer>();
-        list.add(1);
-        list.add(1);
-        list.add(1);
-        list.add(1);
-        Adapter adapter = new Adapter(getBaseContext(), list);
-        RecyclerView recyclerView = findViewById(R.id.table);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ViewGroup group = findViewById(R.id.linear);
+        addCirclePoint(group,10);
     }
 }

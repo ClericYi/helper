@@ -8,6 +8,8 @@ import com.clericyi.basehelper.util.NetworkUtil;
 
 import java.util.Stack;
 import java.util.Vector;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * author: ClericYi
@@ -16,6 +18,11 @@ import java.util.Vector;
 public class App extends Application implements NetworkStatusSubject {
 
     private static App instance;
+
+    private final static int DEFAULT_CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors();//默认的核心数量
+
+    private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
+
     private Vector<NetworkStatusObserver> observers = new Vector<>();
     private boolean networkCurrentStatus;
     private static Stack<BaseActivity> activities = new Stack<>();
@@ -25,6 +32,7 @@ public class App extends Application implements NetworkStatusSubject {
         super.onCreate();
         instance = this;
         networkCurrentStatus = NetworkUtil.isNetConnected(getBaseContext());
+        scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(DEFAULT_CORE_POOL_SIZE);
     }
 
     public static App getInstance() {
@@ -62,7 +70,9 @@ public class App extends Application implements NetworkStatusSubject {
      */
     public void finishActivities() {
         for (BaseActivity activity : activities) {
-            activity.finish();
+            if (activity != null) {
+                activity.finish();
+            }
         }
     }
 
@@ -82,5 +92,14 @@ public class App extends Application implements NetworkStatusSubject {
         if (activities.size() > 0) {
             activities.pop();
         }
+    }
+
+    /**
+     * @param r
+     * @param scheduledTime
+     * @param timeUnit
+     */
+    public void addScheduledThread(Runnable r, int scheduledTime, TimeUnit timeUnit) {
+        scheduledThreadPoolExecutor.schedule(r, scheduledTime, timeUnit);
     }
 }

@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.clericyi.basehelper.network.NetworkReceiver;
 import com.clericyi.basehelper.network.NetworkStatusObserver;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * author: ClericYi
  * time: 2019-11-18
@@ -16,6 +18,9 @@ import com.clericyi.basehelper.network.NetworkStatusObserver;
 public class BaseActivity extends AppCompatActivity implements NetworkStatusObserver {
 
     public final String TAG = this.getClass().getName();
+    protected final String IS_FIRST_LAUNCH = "isFirstLaunch";
+    private final TimeUnit defaultTimeUnit = TimeUnit.MILLISECONDS;
+
     private NetworkReceiver networkReceiver;
 
 
@@ -36,6 +41,9 @@ public class BaseActivity extends AppCompatActivity implements NetworkStatusObse
         App.getInstance().addActivityStack(this);
     }
 
+    /**
+     * 初始化网络连接广播
+     */
     private void initNetwork() {
         App.getInstance().addObserver(this);
         networkReceiver = new NetworkReceiver();
@@ -44,6 +52,23 @@ public class BaseActivity extends AppCompatActivity implements NetworkStatusObse
         registerReceiver(networkReceiver, intentFilter);
     }
 
+    /**
+     * 用于创建立即执行的任务
+     * @param r
+     */
+    protected void addThread(Runnable r) {
+        App.getInstance().addScheduledThread(r, 0, defaultTimeUnit);
+    }
+
+    /**
+     * 用于创建定时任务
+     * @param r
+     * @param waitTime
+     * @param timeUnit
+     */
+    protected void addScheduledThread(Runnable r, int waitTime, TimeUnit timeUnit) {
+        App.getInstance().addScheduledThread(r, waitTime, timeUnit);
+    }
 
     /**
      * Activity销毁时删去观察者
