@@ -3,7 +3,8 @@ package com.clericyi.basehelper.ui;
 import android.content.Intent;
 import android.os.Handler;
 
-import com.clericyi.basehelper.BaseActivity;
+import com.clericyi.basehelper.base.BaseActivity;
+import com.clericyi.basehelper.base.BasePresenter;
 import com.clericyi.basehelper.util.SharePreferencesUtil;
 
 
@@ -12,7 +13,7 @@ import com.clericyi.basehelper.util.SharePreferencesUtil;
  * time: 2020-01-14
  * 启动页
  */
-public class LauncherBaseActivity extends BaseActivity {
+public abstract class LauncherBaseActivity extends BaseActivity {
 
     /**
      * 调用该函数用于自动判定跳转至主页面还是引导页

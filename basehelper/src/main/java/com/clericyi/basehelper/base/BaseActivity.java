@@ -1,4 +1,4 @@
-package com.clericyi.basehelper;
+package com.clericyi.basehelper.base;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.clericyi.basehelper.App;
 import com.clericyi.basehelper.network.NetworkReceiver;
 import com.clericyi.basehelper.network.NetworkStatusObserver;
 
@@ -15,13 +16,15 @@ import java.util.concurrent.TimeUnit;
  * author: ClericYi
  * time: 2019-11-18
  */
-public class BaseActivity extends AppCompatActivity implements NetworkStatusObserver {
+public abstract class BaseActivity<P extends BasePresenter, CONTRACT> extends AppCompatActivity implements NetworkStatusObserver {
 
     public final String TAG = this.getClass().getName();
     protected final String IS_FIRST_LAUNCH = "isFirstLaunch";
     private final TimeUnit defaultTimeUnit = TimeUnit.MILLISECONDS;
 
     private NetworkReceiver networkReceiver;
+
+    protected P p;
 
 
     @Override
@@ -38,7 +41,8 @@ public class BaseActivity extends AppCompatActivity implements NetworkStatusObse
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initNetwork();
-        App.getInstance().addActivityStack(this);
+        p = getPresenter();
+        p.bindView(this);
     }
 
     /**
@@ -54,6 +58,7 @@ public class BaseActivity extends AppCompatActivity implements NetworkStatusObse
 
     /**
      * 用于创建立即执行的任务
+     *
      * @param r
      */
     protected void addThread(Runnable r) {
@@ -62,6 +67,7 @@ public class BaseActivity extends AppCompatActivity implements NetworkStatusObse
 
     /**
      * 用于创建定时任务
+     *
      * @param r
      * @param waitTime
      * @param timeUnit
@@ -78,13 +84,17 @@ public class BaseActivity extends AppCompatActivity implements NetworkStatusObse
         super.onDestroy();
         App.getInstance().removeObserver(this);
         unregisterReceiver(networkReceiver);
-        App.getInstance().popActivityStack();
+        p.unBindView();
     }
 
     /**
-     * 关闭所有的Activity
+     * 让P层做什么需求
      */
-    protected void finishAllActivities() {
-        App.getInstance().finishActivities();
-    }
+    public abstract CONTRACT getContract();
+
+    /**
+     * 从子类中获取具体的契约
+     */
+    public abstract P getPresenter();
+
 }

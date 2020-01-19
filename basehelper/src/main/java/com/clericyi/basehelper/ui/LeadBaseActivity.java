@@ -7,9 +7,8 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
-import com.clericyi.basehelper.BaseActivity;
+import com.clericyi.basehelper.base.BaseActivity;
 import com.clericyi.basehelper.util.DensityUtil;
 import com.clericyi.basehelper.util.SharePreferencesUtil;
 
@@ -18,7 +17,7 @@ import com.clericyi.basehelper.util.SharePreferencesUtil;
  * time: 2020-01-14
  * 基于ViewPager实现可滚动引导页
  */
-public class LeadBaseActivity extends BaseActivity {
+public abstract class LeadBaseActivity extends BaseActivity {
 
     protected int CIRCLE_POINT_SIZE = 16;
 
