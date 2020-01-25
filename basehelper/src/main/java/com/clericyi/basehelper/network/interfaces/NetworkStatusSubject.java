@@ -1,4 +1,4 @@
-package com.clericyi.basehelper.network;
+package com.clericyi.basehelper.network.interfaces;
 
 /**
  * author: ClericYi

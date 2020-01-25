@@ -1,47 +1,93 @@
 package com.clericyi.basehelper.ui;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.view.Gravity;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.util.Log;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.clericyi.basehelper.base.BaseActivity;
-import com.clericyi.basehelper.util.DensityUtil;
+import com.clericyi.basehelper.base.BaseFragment;
 import com.clericyi.basehelper.util.SharePreferencesUtil;
+
+import java.util.List;
 
 /**
  * author: ClericYi
  * time: 2020-01-14
  * 基于ViewPager实现可滚动引导页
+ * 底部的小圆点通过RadioGroup实现
  */
 public abstract class LeadBaseActivity extends BaseActivity {
 
-    protected int CIRCLE_POINT_SIZE = 16;
+    protected int drawableId;
+    protected RadioGroup radioGroup;
+    protected List<BaseFragment> fragments;
 
 
     /**
      * 添加引导页小圆点
      *
-     * @param viewGroup
-     * @param size      需要的数量
+     * @param group
+     * @param size  需要的数量
      */
-    protected void addCirclePoint(ViewGroup viewGroup, int size) {
+    protected void addCirclePoint(RadioGroup group, int size) {
         for (int i = 0; i < size; i++) {
-            RadioButton view = new RadioButton(this);
-            setRaidBtnAttribute(view, i);
-            viewGroup.addView(view);
+            RadioButton radioButton = new RadioButton(this);
+            radioButton.setId(i);
+            radioButton.setButtonDrawable(drawableId);
+            if (i == 0) {
+                radioButton.setChecked(true);
+            }
+            group.addView(radioButton);
         }
+        // 只能通过滑动来进行
+        group.setClickable(false);
     }
 
-    private void setRaidBtnAttribute(RadioButton codeBtn, int id) {
-        codeBtn.setButtonDrawable(new ColorDrawable(Color.CYAN));
-        codeBtn.setId(id);
-        codeBtn.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, DensityUtil.dp2px(this, CIRCLE_POINT_SIZE));
-        codeBtn.setLayoutParams(rlp);
+    /**
+     * 需要进行实例化fragments、radioGroup
+     *
+     * @param viewPager
+     */
+    protected void viewPagerSetting(ViewPager viewPager) {
+        if (fragments == null || radioGroup == null) {
+            Log.e(TAG, "在使用之前需要进行实例化已经准备好的变量fragments、radioGroup");
+        }
+        viewPager.setOffscreenPageLimit(4);
+
+        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
+            @Override
+            public Fragment getItem(int position) {
+                return fragments.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return fragments.size();
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                radioGroup.check(i);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
     }
 
     /**
@@ -61,4 +107,6 @@ public abstract class LeadBaseActivity extends BaseActivity {
         startActivity(new Intent(LeadBaseActivity.this, mainActivity.getClass()));
         finish();
     }
+
+    abstract int setRadioButtonAppearance();
 }

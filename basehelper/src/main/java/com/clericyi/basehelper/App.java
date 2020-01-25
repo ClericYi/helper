@@ -2,8 +2,8 @@ package com.clericyi.basehelper;
 
 import android.app.Application;
 
-import com.clericyi.basehelper.network.NetworkStatusObserver;
-import com.clericyi.basehelper.network.NetworkStatusSubject;
+import com.clericyi.basehelper.network.interfaces.NetworkStatusObserver;
+import com.clericyi.basehelper.network.interfaces.NetworkStatusSubject;
 import com.clericyi.basehelper.util.NetworkUtil;
 
 import java.util.Vector;
